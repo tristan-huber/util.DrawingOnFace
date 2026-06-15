@@ -1,13 +1,87 @@
 {
-    "atomType": "Molecule",
-    "x": 0,
-    "y": 0,
-    "uniqueID": "id-1",
-    "name": "util.DrawingOnFace",
-    "topLevel": true,
-    "allAtoms": [],
-    "allConnectors": [],
-    "unitsKey": "Unitless",
-    "fileTypeVersion": 1,
-    "filetypeVersion": 1
+  "atomType": "Molecule",
+  "x": 0,
+  "y": 0,
+  "uniqueID": "id-1",
+  "name": "util.DrawingOnFace",
+  "ioValues": [
+    {
+      "name": "Face",
+      "ioValue": "__GEOMETRY_INPUT__"
+    },
+    {
+      "name": "Drawing",
+      "ioValue": "__GEOMETRY_INPUT__"
+    }
+  ],
+  "topLevel": true,
+  "allAtoms": [
+    {
+      "atomType": "Output",
+      "x": 0.98,
+      "y": 0.5,
+      "uniqueID": "id-2",
+      "ioValues": [
+        {
+          "name": "number or geometry",
+          "ioValue": "__GEOMETRY_INPUT__"
+        }
+      ]
+    },
+    {
+      "atomType": "Code",
+      "x": 0.4010416666666667,
+      "y": 0.6114285714285714,
+      "uniqueID": "id-4",
+      "ioValues": [
+        {
+          "name": "face",
+          "ioValue": "__GEOMETRY_INPUT__"
+        },
+        {
+          "name": "drawingsAssembly",
+          "ioValue": "__GEOMETRY_INPUT__"
+        }
+      ],
+      "interpreterVersion": 1,
+      "code": "function run(\n  face: Assembly,\n  drawingsAssembly: Assembly,\n): Assembly {\n  if (!face.isLeaf()) {\n    throw new Error(\"face must be singleton leaf\")\n  }\n  let replFace: replicad.Face;\n  if (face.geometry instanceof replicad.Face) {\n    replFace = face.geometry\n  } else {\n    throw new Error(\"Face must be a bare face\")\n  }\n\n  const targetCenter = replFace.pointOnSurface(0.5, 0.5)\n  const targetNormal = replFace.normalAt(targetCenter);\n\n  const result = drawingsAssembly.onLeafs((leaf) => {\n    const baseCenter = leaf.plane.origin;\n    const baseNormal = leaf.plane.zDir;\n\n    let newPlane = leaf.plane.pivot(baseNormal.getAngle(targetNormal), baseNormal.cross(targetNormal))\n    newPlane = newPlane.translate(targetCenter.add(baseCenter.multiply(-1)))\n\n    return new Assembly({\n      ...leaf,\n      plane: newPlane\n    })\n  })\n\n  if (result != null) {\n    return result\n  } else {\n    throw new Error(\"result unexpectedly null\")\n  }\n}",
+      "compiledCode": "\"use strict\";\nfunction run(face, drawingsAssembly) {\n    if (!face.isLeaf()) {\n        throw new Error(\"face must be singleton leaf\");\n    }\n    let replFace;\n    if (face.geometry instanceof replicad.Face) {\n        replFace = face.geometry;\n    }\n    else {\n        throw new Error(\"Face must be a bare face\");\n    }\n    const targetCenter = replFace.pointOnSurface(0.5, 0.5);\n    const targetNormal = replFace.normalAt(targetCenter);\n    const result = drawingsAssembly.onLeafs((leaf) => {\n        const baseCenter = leaf.plane.origin;\n        const baseNormal = leaf.plane.zDir;\n        let newPlane = leaf.plane.pivot(baseNormal.getAngle(targetNormal), baseNormal.cross(targetNormal));\n        newPlane = newPlane.translate(targetCenter.add(baseCenter.multiply(-1)));\n        return new Assembly({\n            ...leaf,\n            plane: newPlane\n        });\n    });\n    if (result != null) {\n        return result;\n    }\n    else {\n        throw new Error(\"result unexpectedly null\");\n    }\n}\n"
+    },
+    {
+      "atomType": "Input",
+      "x": 0.0231,
+      "y": 0.3142857142857143,
+      "uniqueID": "id-15",
+      "name": "Face",
+      "type": "geometry"
+    },
+    {
+      "atomType": "Input",
+      "x": 0.0231,
+      "y": 0.62,
+      "uniqueID": "id-18",
+      "name": "Drawing",
+      "type": "geometry"
+    }
+  ],
+  "allConnectors": [
+    {
+      "ap2Name": "number or geometry",
+      "ap1ID": "id-4",
+      "ap2ID": "id-2"
+    },
+    {
+      "ap2Name": "face",
+      "ap1ID": "id-15",
+      "ap2ID": "id-4"
+    },
+    {
+      "ap2Name": "drawingsAssembly",
+      "ap1ID": "id-18",
+      "ap2ID": "id-4"
+    }
+  ],
+  "unitsKey": "Unitless",
+  "fileTypeVersion": 1,
+  "filetypeVersion": 1
 }
