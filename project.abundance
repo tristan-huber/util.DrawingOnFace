@@ -50,7 +50,7 @@
     {
       "atomType": "Input",
       "x": 0.0231,
-      "y": 0.3142857142857143,
+      "y": 0.14,
       "uniqueID": "id-15",
       "name": "Face",
       "type": "geometry"
@@ -58,7 +58,7 @@
     {
       "atomType": "Input",
       "x": 0.0231,
-      "y": 0.62,
+      "y": 0.22400000000000003,
       "uniqueID": "id-18",
       "name": "Drawing",
       "type": "geometry"
